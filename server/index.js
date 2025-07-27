@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import WhatsAppService from './services/whatsapp.js'
@@ -34,7 +35,11 @@ app.use(cors({
   credentials: true
 }))
 app.use(express.json())
+
+// 🌐 SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND (BUILD DE REACT)
 app.use(express.static('public'))
+
+
 
 // Rutas OAuth para Google Drive
 app.get('/auth/google', (req, res) => {
@@ -1038,6 +1043,17 @@ server.listen(PORT, () => {
   console.log('\n' + '='.repeat(60))
   console.log('✅ Sistema listo para usar')
   console.log('='.repeat(60) + '\n')
+})
+
+// 🎯 FALLBACK PARA REACT ROUTER (SPA) - DEBE IR ANTES DEL MANEJO DE ERRORES
+app.get('*', (req, res, next) => {
+  // Si es una ruta de API, continuar con el siguiente middleware
+  if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || req.path.startsWith('/socket.io/')) {
+    return next()
+  }
+
+  // Para todas las demás rutas, servir index.html (React Router se encarga)
+  res.sendFile(path.join(process.cwd(), 'public', 'index.html'))
 })
 
 // 🚨 MANEJO DE ERRORES (debe ir al final)
