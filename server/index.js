@@ -76,6 +76,16 @@ app.get('/auth/google/callback', async (req, res) => {
       return res.status(400).send('Código de autorización no recibido')
     }
 
+    if (!googleAuth.isConfigured()) {
+      console.log('⚠️ OAuth callback recibido pero OAuth no está configurado')
+      return res.send(`
+        <script>
+          window.opener.postMessage({type: 'auth-error', error: 'OAuth no configurado'}, '*');
+          window.close();
+        </script>
+      `)
+    }
+
     // Intercambiar código por tokens
     const tokens = await googleAuth.getTokens(code)
 
@@ -97,7 +107,13 @@ app.get('/auth/google/callback', async (req, res) => {
       </script>
     `)
   } catch (error) {
-    console.error('❌ Error en callback OAuth:', error.message)
+    // Solo mostrar error si OAuth está configurado
+    if (googleAuth.isConfigured()) {
+      console.error('❌ Error en callback OAuth:', error.message)
+    } else {
+      console.log('⚠️ Intento de OAuth sin configuración - ignorando')
+    }
+
     res.send(`
       <script>
         window.opener.postMessage({
