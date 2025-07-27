@@ -36,14 +36,27 @@ export class GoogleDriveService {
 
   async setCredentials(tokens, userInfo = null) {
     try {
-      // Cargar credenciales OAuth
-      const credentialsPath = path.join(process.cwd(), 'auth', 'credentials.json')
-      if (!fs.existsSync(credentialsPath)) {
-        throw new Error('Archivo credentials.json no encontrado')
+      // 🌐 PRIORIDAD 1: Cargar desde variables de entorno (PRODUCCIÓN)
+      let credentials
+      if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
+        console.log('✅ GoogleDrive: Usando credenciales desde variables de entorno')
+        credentials = {
+          web: {
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+            redirect_uris: [process.env.REDIRECT_URI || 'http://localhost:3001/auth/google/callback']
+          }
+        }
+      } else {
+        // 📁 FALLBACK: Cargar desde archivo (DESARROLLO)
+        const credentialsPath = path.join(process.cwd(), 'auth', 'credentials.json')
+        if (!fs.existsSync(credentialsPath)) {
+          throw new Error('Credenciales OAuth no encontradas. Configure CLIENT_ID y CLIENT_SECRET en variables de entorno o agregue credentials.json')
+        }
+        console.log('✅ GoogleDrive: Usando credenciales desde archivo local')
+        credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
       }
 
-      const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
-      
       this.oauth2Client = new google.auth.OAuth2(
         credentials.web.client_id,
         credentials.web.client_secret,

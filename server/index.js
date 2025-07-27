@@ -60,10 +60,19 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
   try {
+    console.log('🔄 OAuth Callback recibido:', {
+      query: req.query,
+      url: req.url,
+      headers: {
+        'user-agent': req.headers['user-agent'],
+        'referer': req.headers['referer']
+      }
+    })
+
     const { code, error } = req.query
 
     if (error) {
-      console.log('⚠️ Usuario canceló autenticación OAuth')
+      console.log('⚠️ Usuario canceló autenticación OAuth:', error)
       return res.send(`
         <script>
           window.opener.postMessage({type: 'auth-cancelled'}, '*');
@@ -73,6 +82,7 @@ app.get('/auth/google/callback', async (req, res) => {
     }
 
     if (!code) {
+      console.log('❌ Código de autorización no recibido')
       return res.status(400).send('Código de autorización no recibido')
     }
 
@@ -86,16 +96,22 @@ app.get('/auth/google/callback', async (req, res) => {
       `)
     }
 
+    console.log('🔑 Intercambiando código por tokens...')
     // Intercambiar código por tokens
     const tokens = await googleAuth.getTokens(code)
+    console.log('✅ Tokens obtenidos exitosamente')
 
+    console.log('👤 Obteniendo información del usuario...')
     // Obtener información del usuario
     const userInfo = await googleAuth.getUserInfo(tokens)
+    console.log('✅ Información del usuario obtenida:', userInfo.email)
 
+    console.log('🔄 Configurando Google Drive...')
     // Configurar Google Drive con las credenciales
     await googleDrive.setCredentials(tokens, userInfo)
+    console.log('✅ Google Drive configurado exitosamente')
 
-    console.log(`✅ Usuario autenticado: ${userInfo.email}`)
+    console.log(`🎉 Usuario autenticado completamente: ${userInfo.email}`)
 
     res.send(`
       <script>
@@ -107,6 +123,12 @@ app.get('/auth/google/callback', async (req, res) => {
       </script>
     `)
   } catch (error) {
+    console.error('❌ Error detallado en callback OAuth:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    })
+
     // Solo mostrar error si OAuth está configurado
     if (googleAuth.isConfigured()) {
       console.error('❌ Error en callback OAuth:', error.message)
