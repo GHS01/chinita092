@@ -1,0 +1,31 @@
+# ===========================================
+# CONFIGURACIÓN PARA RENDER
+# ===========================================
+
+services:
+  # Servicio Backend (Node.js)
+  - type: web
+    name: whatsapp-sales-agent-backend
+    env: node
+    plan: starter
+    buildCommand: chmod +x render-build.sh && ./render-build.sh
+    startCommand: cd server && node index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: whatsapp-sales-agent-backend
+          property: port
+      # Las demás variables se configuran manualmente en Render Dashboard
+
+  # Servicio Frontend (Static Site)
+  - type: static
+    name: whatsapp-sales-agent-frontend
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_ENV
+        value: production

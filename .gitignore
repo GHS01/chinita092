@@ -2,6 +2,7 @@
 node_modules/
 whatsapp-agent/node_modules/
 whatsapp-agent/server/node_modules/
+server/node_modules/
 
 # Build outputs
 dist/
@@ -9,11 +10,12 @@ build/
 whatsapp-agent/dist/
 whatsapp-agent/build/
 
-# Vite cache
+# Vite cache (problemas con OneDrive)
 .vite/
 .vite-cache/
 whatsapp-agent/.vite/
 whatsapp-agent/node_modules/.vite/
+node_modules/.vite/
 
 # Environment variables
 .env
@@ -69,7 +71,7 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# parcel-bundler cache
+# parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
 
@@ -78,6 +80,7 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
+dist
 
 # Storybook build outputs
 .out
@@ -104,6 +107,9 @@ whatsapp-agent/server/auth_info_baileys/
 whatsapp-agent/server/*.db
 whatsapp-agent/server/*.db-journal
 whatsapp-agent/server/sales_agent.db*
+server/auth_info_baileys/
+server/*.db
+server/*.db-journal
 
 # Database files (SENSIBLE - NO SUBIR)
 *.db
