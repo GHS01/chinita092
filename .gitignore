@@ -1,0 +1,134 @@
+# Dependencies
+node_modules/
+whatsapp-agent/node_modules/
+whatsapp-agent/server/node_modules/
+
+# Build outputs
+dist/
+build/
+whatsapp-agent/dist/
+whatsapp-agent/build/
+
+# Vite cache
+.vite/
+.vite-cache/
+whatsapp-agent/.vite/
+whatsapp-agent/node_modules/.vite/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+whatsapp-agent/.env
+whatsapp-agent/.env.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+
+# Nuxt.js build / generate output
+.nuxt
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+C:/temp/vite-cache-wsa/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# WhatsApp auth files (SENSIBLE - NO SUBIR)
+whatsapp-agent/server/auth_info_baileys/
+whatsapp-agent/server/*.db
+whatsapp-agent/server/*.db-journal
+whatsapp-agent/server/sales_agent.db*
+
+# Database files (SENSIBLE - NO SUBIR)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# OneDrive specific
+*.tmp
+~$*
+
+# Archivos de respaldo
+RESPALDO_SISTEMA/
+*.rar
+*.zip
+
+# Archivos de configuración local
+whatsapp-agent/server/auth/credentials.json
+
+# Archivos temporales de memoria
+memory-bank/
+memory-bank.rar
