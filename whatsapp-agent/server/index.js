@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import WhatsAppService from './services/whatsapp.js'
@@ -34,7 +35,11 @@ app.use(cors({
   credentials: true
 }))
 app.use(express.json())
+
+// 🌐 SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND (BUILD DE REACT)
 app.use(express.static('public'))
+
+
 
 // Rutas OAuth para Google Drive
 app.get('/auth/google', (req, res) => {
@@ -71,6 +76,16 @@ app.get('/auth/google/callback', async (req, res) => {
       return res.status(400).send('Código de autorización no recibido')
     }
 
+    if (!googleAuth.isConfigured()) {
+      console.log('⚠️ OAuth callback recibido pero OAuth no está configurado')
+      return res.send(`
+        <script>
+          window.opener.postMessage({type: 'auth-error', error: 'OAuth no configurado'}, '*');
+          window.close();
+        </script>
+      `)
+    }
+
     // Intercambiar código por tokens
     const tokens = await googleAuth.getTokens(code)
 
@@ -92,7 +107,13 @@ app.get('/auth/google/callback', async (req, res) => {
       </script>
     `)
   } catch (error) {
-    console.error('❌ Error en callback OAuth:', error.message)
+    // Solo mostrar error si OAuth está configurado
+    if (googleAuth.isConfigured()) {
+      console.error('❌ Error en callback OAuth:', error.message)
+    } else {
+      console.log('⚠️ Intento de OAuth sin configuración - ignorando')
+    }
+
     res.send(`
       <script>
         window.opener.postMessage({
@@ -1038,6 +1059,17 @@ server.listen(PORT, () => {
   console.log('\n' + '='.repeat(60))
   console.log('✅ Sistema listo para usar')
   console.log('='.repeat(60) + '\n')
+})
+
+// 🎯 FALLBACK PARA REACT ROUTER (SPA) - DEBE IR ANTES DEL MANEJO DE ERRORES
+app.get('*', (req, res, next) => {
+  // Si es una ruta de API, continuar con el siguiente middleware
+  if (req.path.startsWith('/api/') || req.path.startsWith('/auth/') || req.path.startsWith('/socket.io/')) {
+    return next()
+  }
+
+  // Para todas las demás rutas, servir index.html (React Router se encarga)
+  res.sendFile(path.join(process.cwd(), 'public', 'index.html'))
 })
 
 // 🚨 MANEJO DE ERRORES (debe ir al final)

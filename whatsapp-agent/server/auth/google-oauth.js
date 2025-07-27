@@ -17,17 +17,17 @@ export class GoogleOAuthService {
   initializeCredentials() {
     try {
       // 🌐 PRIORIDAD 1: Cargar desde variables de entorno (PRODUCCIÓN)
-      if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+      if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
         console.log('✅ Cargando credenciales OAuth desde variables de entorno')
         this.credentials = {
           web: {
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            project_id: process.env.GOOGLE_PROJECT_ID || 'whatsapp-sales-agent',
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+            project_id: process.env.PROJECT_ID || 'whatsapp-sales-agent',
             auth_uri: 'https://accounts.google.com/o/oauth2/auth',
             token_uri: 'https://oauth2.googleapis.com/token',
             auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-            redirect_uris: [process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/auth/google/callback'],
+            redirect_uris: [process.env.REDIRECT_URI || 'http://localhost:3001/auth/google/callback'],
             javascript_origins: [
               process.env.FRONTEND_URL || 'http://localhost:3000',
               'http://localhost:3000',
@@ -47,7 +47,7 @@ export class GoogleOAuthService {
         this.setupOAuth2Client()
       } else {
         console.log('⚠️ OAuth no configurado:')
-        console.log('   - Variables de entorno: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET no encontradas')
+        console.log('   - Variables de entorno: CLIENT_ID, CLIENT_SECRET no encontradas')
         console.log('   - Archivo credentials.json no encontrado en: auth/credentials.json')
         console.log('📝 Configura OAuth para habilitar Google Drive')
       }
