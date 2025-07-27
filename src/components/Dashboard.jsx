@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { QrCode, MessageCircle, TrendingUp, Package, ShoppingCart, AlertTriangle, RefreshCw } from 'lucide-react'
+import { buildApiUrl, API_CONFIG } from '../config/api'
 import QRCodeDisplay from './QRCodeDisplay'
 
 const Dashboard = ({ whatsappStatus, qrCode, socket }) => {
@@ -16,7 +17,9 @@ const Dashboard = ({ whatsappStatus, qrCode, socket }) => {
   // Función para cargar estadísticas desde API REST
   const loadStats = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/stats')
+      const statsUrl = buildApiUrl(API_CONFIG.ENDPOINTS.STATS)
+      console.log('📊 Cargando estadísticas desde:', statsUrl)
+      const response = await fetch(statsUrl)
       const data = await response.json()
       if (data.status === 'OK') {
         setStats(data)

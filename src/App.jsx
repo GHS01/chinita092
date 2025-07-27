@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { io } from 'socket.io-client'
+import { API_CONFIG } from './config/api'
 import Dashboard from './components/Dashboard'
 import Inventory from './components/Inventory'
 import Orders from './components/Orders'
@@ -18,8 +19,9 @@ function App() {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    // Conectar al servidor Socket.IO
-    const newSocket = io('http://localhost:3001')
+    // Conectar al servidor Socket.IO usando configuración dinámica
+    console.log('🔌 Conectando a Socket.IO:', API_CONFIG.SOCKET_URL)
+    const newSocket = io(API_CONFIG.SOCKET_URL)
     setSocket(newSocket)
 
     // Escuchar eventos de WhatsApp
