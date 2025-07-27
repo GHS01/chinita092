@@ -8,9 +8,9 @@ set -e  # Salir si cualquier comando falla
 
 echo "🚀 Iniciando build para Render..."
 
-# Instalar dependencias del frontend
+# Instalar dependencias del frontend (incluyendo devDependencies para build)
 echo "📦 Instalando dependencias del frontend..."
-npm install
+npm install --include=dev
 
 # Instalar dependencias del servidor
 echo "📦 Instalando dependencias del servidor..."
